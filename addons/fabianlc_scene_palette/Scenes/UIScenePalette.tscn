@@ -1,0 +1,209 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/fabianlc_scene_palette/Scenes/UIScenePalette.gd" type="Script" id=1]
+[ext_resource path="res://addons/fabianlc_scene_palette/Scenes/adaptive_grid_container.gd" type="Script" id=2]
+
+[node name="UIScenePalette" type="PanelContainer"]
+anchor_bottom = 1.0
+margin_right = 200.0
+rect_min_size = Vector2( 200, 100 )
+rect_clip_content = true
+mouse_filter = 1
+size_flags_horizontal = 9
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 193.0
+margin_bottom = 593.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ToolBar" type="Container" parent="VBoxContainer"]
+margin_right = 186.0
+margin_bottom = 192.0
+rect_min_size = Vector2( 0, 192 )
+rect_clip_content = true
+script = ExtResource( 2 )
+
+[node name="File" type="ToolButton" parent="VBoxContainer/ToolBar"]
+margin_right = 35.0
+margin_bottom = 32.0
+text = "File"
+
+[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/ToolBar/File"]
+margin_top = 32.0
+margin_right = 77.0
+margin_bottom = 66.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CGSnap" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_left = 36.0
+margin_right = 97.0
+margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGSnap"]
+margin_right = 61.0
+margin_bottom = 14.0
+text = "Grid Snap"
+
+[node name="GridSnap" type="CheckBox" parent="VBoxContainer/ToolBar/CGSnap"]
+margin_top = 18.0
+margin_right = 61.0
+margin_bottom = 42.0
+
+[node name="CGWidth" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_left = 98.0
+margin_right = 172.0
+margin_bottom = 52.0
+size_flags_horizontal = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGWidth"]
+margin_right = 74.0
+margin_bottom = 14.0
+size_flags_horizontal = 9
+size_flags_vertical = 8
+text = "Grid Width"
+
+[node name="GridWidth" type="SpinBox" parent="VBoxContainer/ToolBar/CGWidth"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 9
+size_flags_vertical = 9
+min_value = 1.0
+value = 16.0
+rounded = true
+allow_greater = true
+suffix = "px"
+
+[node name="CGHeight" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_top = 52.0
+margin_right = 74.0
+margin_bottom = 112.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGHeight"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Grid Height"
+
+[node name="GridHeight" type="SpinBox" parent="VBoxContainer/ToolBar/CGHeight"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 9
+size_flags_vertical = 9
+min_value = 1.0
+value = 16.0
+rounded = true
+allow_greater = true
+suffix = "px"
+
+[node name="CRot" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_left = 75.0
+margin_top = 52.0
+margin_right = 149.0
+margin_bottom = 94.0
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CRot"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Rotation"
+
+[node name="Rotation" type="SpinBox" parent="VBoxContainer/ToolBar/CRot"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+max_value = 360.0
+value = 360.0
+rounded = true
+
+[node name="CFlipH" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_top = 112.0
+margin_right = 46.0
+margin_bottom = 154.0
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipH"]
+margin_right = 46.0
+margin_bottom = 14.0
+text = "Flip H"
+
+[node name="FlipH" type="CheckBox" parent="VBoxContainer/ToolBar/CFlipH"]
+margin_top = 18.0
+margin_right = 46.0
+margin_bottom = 42.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+
+[node name="CFlipV" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_left = 47.0
+margin_top = 112.0
+margin_right = 93.0
+margin_bottom = 154.0
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipV"]
+margin_right = 46.0
+margin_bottom = 14.0
+text = "Flip V"
+
+[node name="FlipV" type="CheckBox" parent="VBoxContainer/ToolBar/CFlipV"]
+margin_top = 18.0
+margin_right = 46.0
+margin_bottom = 42.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+
+[node name="CZoom" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_left = 94.0
+margin_top = 112.0
+margin_right = 174.0
+margin_bottom = 192.0
+
+[node name="Label2" type="Label" parent="VBoxContainer/ToolBar/CZoom"]
+margin_right = 80.0
+margin_bottom = 14.0
+text = "Zoom Level"
+
+[node name="Zoom" type="HSlider" parent="VBoxContainer/ToolBar/CZoom"]
+margin_top = 18.0
+margin_right = 80.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 80, 0 )
+min_value = 0.15
+max_value = 4.0
+step = 0.15
+value = 1.05
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+margin_top = 196.0
+margin_right = 186.0
+margin_bottom = 586.0
+rect_clip_content = false
+size_flags_vertical = 3
+
+[node name="Instances" type="Container" parent="VBoxContainer/ScrollContainer"]
+show_behind_parent = true
+margin_right = 186.0
+size_flags_horizontal = 11
+size_flags_vertical = 9
+script = ExtResource( 2 )
