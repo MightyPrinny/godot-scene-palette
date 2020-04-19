@@ -140,7 +140,7 @@ func _draw_overlay(obj:CanvasItem):
 
 var last_instance_made
 
-func make_instance(source_node, position, parent,undo_stuff):
+func make_instance(source_node, position,scale,rotation_deg, parent,undo_stuff):
 	if !is_instance_valid(source_node) || !is_instance_valid(parent):
 		last_instance_made = null
 		return
@@ -149,12 +149,12 @@ func make_instance(source_node, position, parent,undo_stuff):
 	new_instance.owner = current_scene
 	var tr:Transform2D = panel_instance.palette_transform
 	if new_instance is Node2D:
-		new_instance.scale = panel_instance.palette_scale
-		new_instance.rotation_degrees = panel_instance.palette_rotation
+		new_instance.scale = scale
+		new_instance.rotation_degrees = rotation_deg
 		new_instance.global_position = position
 	elif new_instance is Control:
-		new_instance.rect_scale = panel_instance.palette_scale
-		new_instance.rect_rotation = deg2rad(panel_instance.palette_rotation)
+		new_instance.rect_scale = scale
+		new_instance.rect_rotation = deg2rad(rotation_deg)
 		new_instance.rect_global_position = position
 	last_instance_made = new_instance
 	undo_stuff[1] = [new_instance]
@@ -202,7 +202,7 @@ func forward_canvas_gui_input(event):
 			var target_node = current_scene
 			if panel_instance.to_selection && is_instance_valid(selected_node):
 				target_node = selected_node
-			var new_do_stuff = [new_do_stuff_func,[panel_instance.selected_item.get_child(0), instance_pos, target_node,prev_do_stuff]]
+			var new_do_stuff = [new_do_stuff_func,[panel_instance.selected_item.get_child(0), instance_pos,panel_instance.palette_scale,panel_instance.palette_rotation, target_node,prev_do_stuff]]
 			undo_redo.add_do_property(self,"do_stuff",new_do_stuff)
 			undo_redo.add_undo_property(self,"do_stuff",prev_do_stuff)
 			last_instance_made = null
