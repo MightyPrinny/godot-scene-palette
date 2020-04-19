@@ -3,10 +3,17 @@ extends Container
 
 export var spacing = 1
 
+var max_sorts_per_frame = 3
+var sort_counter = 0
+
 func _ready():
 	connect("sort_children",self,"_sort")
-	
+	pause_mode = PAUSE_MODE_PROCESS
+
 func _sort():
+	if sort_counter >= max_sorts_per_frame:
+		return
+	sort_counter += 1
 	var count = get_child_count()
 	var i = 0
 	var child
@@ -48,3 +55,6 @@ func _sort():
 		i += 1
 	rect_size = new_rect.size
 	rect_min_size.y = new_rect.size.y
+
+func _process(delta):
+	sort_counter = 0

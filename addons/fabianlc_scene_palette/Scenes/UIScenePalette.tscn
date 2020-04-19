@@ -5,7 +5,7 @@
 
 [node name="UIScenePalette" type="PanelContainer"]
 anchor_bottom = 1.0
-margin_right = 200.0
+margin_right = 300.0
 rect_min_size = Vector2( 200, 100 )
 rect_clip_content = true
 mouse_filter = 1
@@ -18,7 +18,7 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 193.0
+margin_right = 293.0
 margin_bottom = 593.0
 size_flags_horizontal = 9
 size_flags_vertical = 9
@@ -26,186 +26,33 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ToolBar" type="Container" parent="VBoxContainer"]
-margin_right = 186.0
-margin_bottom = 234.0
-rect_min_size = Vector2( 0, 234 )
-rect_clip_content = true
-script = ExtResource( 2 )
+[node name="Toolbar" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 286.0
+margin_bottom = 34.0
 
-[node name="File" type="ToolButton" parent="VBoxContainer/ToolBar"]
+[node name="File" type="MenuButton" parent="VBoxContainer/Toolbar"]
 margin_right = 35.0
-margin_bottom = 32.0
+margin_bottom = 34.0
 text = "File"
+flat = false
 
-[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/ToolBar/File"]
-margin_top = 32.0
-margin_right = 77.0
-margin_bottom = 66.0
+[node name="CZoom" type="VBoxContainer" parent="VBoxContainer/Toolbar"]
+margin_left = 39.0
+margin_right = 286.0
+margin_bottom = 34.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
+size_flags_vertical = 2
+alignment = 1
 
-[node name="CSelectedNode" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 36.0
-margin_right = 143.0
-margin_bottom = 42.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CSelectedNode"]
-margin_right = 107.0
-margin_bottom = 14.0
-text = "To Selection"
-
-[node name="ToSelection" type="CheckBox" parent="VBoxContainer/ToolBar/CSelectedNode"]
-margin_top = 18.0
-margin_right = 107.0
-margin_bottom = 42.0
-hint_tooltip = "If enabled instances will be added as a child of the selected node"
-
-[node name="CGSnap" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_top = 42.0
-margin_right = 61.0
-margin_bottom = 84.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGSnap"]
-margin_right = 61.0
-margin_bottom = 14.0
-text = "Grid Snap"
-
-[node name="GridSnap" type="CheckBox" parent="VBoxContainer/ToolBar/CGSnap"]
-margin_top = 18.0
-margin_right = 61.0
-margin_bottom = 42.0
-
-[node name="CGWidth" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 62.0
-margin_top = 42.0
-margin_right = 136.0
-margin_bottom = 94.0
-size_flags_horizontal = 9
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGWidth"]
-margin_right = 74.0
-margin_bottom = 14.0
-size_flags_horizontal = 9
-size_flags_vertical = 8
-text = "Grid Width"
-
-[node name="GridWidth" type="SpinBox" parent="VBoxContainer/ToolBar/CGWidth"]
-margin_top = 18.0
-margin_right = 74.0
-margin_bottom = 42.0
-rect_min_size = Vector2( 64, 0 )
-size_flags_horizontal = 9
-size_flags_vertical = 9
-min_value = 1.0
-value = 16.0
-rounded = true
-allow_greater = true
-suffix = "px"
-
-[node name="CGHeight" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_top = 94.0
-margin_right = 74.0
-margin_bottom = 154.0
-size_flags_horizontal = 9
-size_flags_vertical = 9
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGHeight"]
-margin_right = 74.0
-margin_bottom = 14.0
-text = "Grid Height"
-
-[node name="GridHeight" type="SpinBox" parent="VBoxContainer/ToolBar/CGHeight"]
-margin_top = 18.0
-margin_right = 74.0
-margin_bottom = 42.0
-rect_min_size = Vector2( 64, 0 )
-size_flags_horizontal = 9
-size_flags_vertical = 9
-min_value = 1.0
-value = 16.0
-rounded = true
-allow_greater = true
-suffix = "px"
-
-[node name="CRot" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 75.0
-margin_top = 94.0
-margin_right = 149.0
-margin_bottom = 136.0
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CRot"]
-margin_right = 74.0
-margin_bottom = 14.0
-text = "Rotation"
-
-[node name="Rotation" type="SpinBox" parent="VBoxContainer/ToolBar/CRot"]
-margin_top = 18.0
-margin_right = 74.0
-margin_bottom = 42.0
-size_flags_horizontal = 9
-size_flags_vertical = 9
-max_value = 360.0
-rounded = true
-
-[node name="CFlipH" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_top = 154.0
-margin_right = 46.0
-margin_bottom = 196.0
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipH"]
-margin_right = 46.0
-margin_bottom = 14.0
-text = "Flip H"
-
-[node name="FlipH" type="CheckBox" parent="VBoxContainer/ToolBar/CFlipH"]
-margin_top = 18.0
-margin_right = 46.0
-margin_bottom = 42.0
-size_flags_horizontal = 9
-size_flags_vertical = 9
-
-[node name="CFlipV" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 47.0
-margin_top = 154.0
-margin_right = 93.0
-margin_bottom = 196.0
-
-[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipV"]
-margin_right = 46.0
-margin_bottom = 14.0
-text = "Flip V"
-
-[node name="FlipV" type="CheckBox" parent="VBoxContainer/ToolBar/CFlipV"]
-margin_top = 18.0
-margin_right = 46.0
-margin_bottom = 42.0
-size_flags_horizontal = 9
-size_flags_vertical = 9
-
-[node name="CZoom" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 94.0
-margin_top = 154.0
-margin_right = 174.0
-margin_bottom = 234.0
-
-[node name="Label2" type="Label" parent="VBoxContainer/ToolBar/CZoom"]
-margin_right = 80.0
+[node name="Label2" type="Label" parent="VBoxContainer/Toolbar/CZoom"]
+margin_right = 247.0
 margin_bottom = 14.0
 text = "Zoom Level"
+align = 1
 
-[node name="Zoom" type="HSlider" parent="VBoxContainer/ToolBar/CZoom"]
+[node name="Zoom" type="HSlider" parent="VBoxContainer/Toolbar/CZoom"]
 margin_top = 18.0
-margin_right = 80.0
+margin_right = 247.0
 margin_bottom = 34.0
 rect_min_size = Vector2( 80, 0 )
 min_value = 0.15
@@ -213,16 +60,300 @@ max_value = 4.0
 step = 0.15
 value = 1.05
 
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
+margin_top = 38.0
+margin_right = 286.0
+margin_bottom = 133.0
+size_flags_horizontal = 3
+
+[node name="Actions" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Actions" type="Container" parent="VBoxContainer/TabContainer/Actions"]
+pause_mode = 2
+margin_right = 278.0
+margin_bottom = 59.0
+rect_min_size = Vector2( 0, 59 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+spacing = 1
+
+[node name="CSelectedNode" type="VBoxContainer" parent="VBoxContainer/TabContainer/Actions/Actions"]
+margin_right = 78.0
+margin_bottom = 59.0
+hint_tooltip = "If enabled instances will be added as a child of the selected node"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Actions/Actions/CSelectedNode"]
+margin_right = 78.0
+margin_bottom = 31.0
+text = "Parent  to
+selection"
+align = 1
+valign = 1
+
+[node name="ToSelection" type="CheckBox" parent="VBoxContainer/TabContainer/Actions/Actions/CSelectedNode"]
+margin_left = 27.0
+margin_top = 35.0
+margin_right = 51.0
+margin_bottom = 59.0
+hint_tooltip = "If enabled instances will be added as a child of the selected node"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CRot" type="VBoxContainer" parent="VBoxContainer/TabContainer/Actions/Actions"]
+margin_left = 79.0
+margin_right = 153.0
+margin_bottom = 42.0
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Actions/Actions/CRot"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Rotation"
+align = 1
+valign = 1
+
+[node name="Rotation" type="SpinBox" parent="VBoxContainer/TabContainer/Actions/Actions/CRot"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+max_value = 360.0
+rounded = true
+
+[node name="CFlipH" type="VBoxContainer" parent="VBoxContainer/TabContainer/Actions/Actions"]
+margin_left = 154.0
+margin_right = 200.0
+margin_bottom = 42.0
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Actions/Actions/CFlipH"]
+margin_right = 46.0
+margin_bottom = 14.0
+text = "Flip H"
+align = 1
+valign = 1
+
+[node name="FlipH" type="CheckBox" parent="VBoxContainer/TabContainer/Actions/Actions/CFlipH"]
+margin_left = 11.0
+margin_top = 18.0
+margin_right = 35.0
+margin_bottom = 42.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CFlipV" type="VBoxContainer" parent="VBoxContainer/TabContainer/Actions/Actions"]
+margin_left = 201.0
+margin_right = 247.0
+margin_bottom = 42.0
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Actions/Actions/CFlipV"]
+margin_right = 46.0
+margin_bottom = 14.0
+text = "Flip V"
+align = 1
+valign = 1
+
+[node name="FlipV" type="CheckBox" parent="VBoxContainer/TabContainer/Actions/Actions/CFlipV"]
+margin_left = 11.0
+margin_top = 18.0
+margin_right = 35.0
+margin_bottom = 42.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Grid" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Config" type="Container" parent="VBoxContainer/TabContainer/Grid"]
+pause_mode = 2
+margin_right = 278.0
+margin_bottom = 111.0
+rect_min_size = Vector2( 0, 111 )
+rect_clip_content = true
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+spacing = 1
+
+[node name="CSyncToEditor" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_right = 88.0
+margin_bottom = 59.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CSyncToEditor"]
+margin_right = 88.0
+margin_bottom = 14.0
+text = "Sync to editor"
+
+[node name="SyncToEditor" type="CheckBox" parent="VBoxContainer/TabContainer/Grid/Config/CSyncToEditor"]
+margin_left = 32.0
+margin_top = 18.0
+margin_right = 56.0
+margin_bottom = 42.0
+size_flags_horizontal = 4
+align = 1
+
+[node name="CGSnap" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_left = 89.0
+margin_right = 150.0
+margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CGSnap"]
+margin_right = 61.0
+margin_bottom = 14.0
+text = "Grid Snap"
+
+[node name="GridSnap" type="CheckBox" parent="VBoxContainer/TabContainer/Grid/Config/CGSnap"]
+margin_left = 18.0
+margin_top = 18.0
+margin_right = 42.0
+margin_bottom = 42.0
+size_flags_horizontal = 4
+
+[node name="CGWidth" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_left = 151.0
+margin_right = 225.0
+margin_bottom = 52.0
+size_flags_horizontal = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CGWidth"]
+margin_right = 74.0
+margin_bottom = 14.0
+size_flags_horizontal = 9
+size_flags_vertical = 8
+text = "Grid Width"
+
+[node name="GridWidth" type="SpinBox" parent="VBoxContainer/TabContainer/Grid/Config/CGWidth"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+min_value = 1.0
+value = 16.0
+rounded = true
+allow_greater = true
+suffix = "px"
+
+[node name="CGHeight" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_top = 59.0
+margin_right = 74.0
+margin_bottom = 101.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CGHeight"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Grid Height"
+
+[node name="GridHeight" type="SpinBox" parent="VBoxContainer/TabContainer/Grid/Config/CGHeight"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+min_value = 1.0
+value = 16.0
+rounded = true
+allow_greater = true
+suffix = "px"
+
+[node name="CGOffX" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_left = 75.0
+margin_top = 59.0
+margin_right = 149.0
+margin_bottom = 111.0
+size_flags_horizontal = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CGOffX"]
+margin_right = 74.0
+margin_bottom = 14.0
+size_flags_horizontal = 9
+size_flags_vertical = 8
+text = "X Offset"
+
+[node name="GOffX" type="SpinBox" parent="VBoxContainer/TabContainer/Grid/Config/CGOffX"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+allow_greater = true
+suffix = "px"
+
+[node name="CGOffY" type="VBoxContainer" parent="VBoxContainer/TabContainer/Grid/Config"]
+margin_left = 150.0
+margin_top = 59.0
+margin_right = 224.0
+margin_bottom = 101.0
+size_flags_horizontal = 9
+size_flags_vertical = 9
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Grid/Config/CGOffY"]
+margin_right = 74.0
+margin_bottom = 14.0
+text = "Y Offset"
+
+[node name="GOffY" type="SpinBox" parent="VBoxContainer/TabContainer/Grid/Config/CGOffY"]
+margin_top = 18.0
+margin_right = 74.0
+margin_bottom = 42.0
+rect_min_size = Vector2( 64, 0 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+allow_greater = true
+suffix = "px"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
-margin_top = 238.0
-margin_right = 186.0
+margin_top = 137.0
+margin_right = 286.0
 margin_bottom = 586.0
 rect_clip_content = false
 size_flags_vertical = 3
 
 [node name="Instances" type="Container" parent="VBoxContainer/ScrollContainer"]
+pause_mode = 2
 show_behind_parent = true
-margin_right = 186.0
+margin_right = 286.0
 size_flags_horizontal = 11
 size_flags_vertical = 9
 script = ExtResource( 2 )
+spacing = 1

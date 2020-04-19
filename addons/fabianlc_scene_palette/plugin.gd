@@ -1,36 +1,54 @@
 tool
 extends EditorPlugin
 
-var palette_scene
 var editor_interface:EditorInterface
 var base_control:Control
+var canvas_toolbar
 var enabled_check_box
 var panel_enabled = false
-var panel_instance
 var drawer:CanvasItem
 var current_scene:Node
 var last_tile = Vector2()
 var drawing_tiles = false
 var transformed_rect = PoolVector2Array()
 var selected_node
+var palette_menu:MenuButton
+var palette_scene
+var panel_instance
+var panel_active
+
+#menu ids
+enum {
+	TogglePaletteEnabled,
+	TogglePaletteVisible,
+}
 
 func _enter_tree():
 	transformed_rect.resize(4)
 	palette_scene = load("res://addons/fabianlc_scene_palette/Scenes/UIScenePalette.tscn")
 	editor_interface = get_editor_interface()
 	base_control = editor_interface.get_base_control()
-	enabled_check_box = CheckBox.new()
-	enabled_check_box.text = "enable scene palette panel"
-	enabled_check_box.pressed = false
-	enabled_check_box.connect("toggled",self,"set_panel_enabled")
-	add_control_to_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU,enabled_check_box)
+	var hbox = HBoxContainer.new()
+	var label = Label.new()
+	
+	palette_menu = MenuButton.new()
+	palette_menu.text = "Scene Palette"
+	var popup_menu = palette_menu.get_popup() as PopupMenu
+	popup_menu.add_item("Toggle Enabled", TogglePaletteEnabled)
+	popup_menu.add_item("Toggle Visible", TogglePaletteVisible)
+	popup_menu.connect("id_pressed",self,"_palette_menu_id_pressed")
+	add_control_to_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU,palette_menu)
+	canvas_toolbar = palette_menu.get_parent()
 	set_input_event_forwarding_always_enabled()
+
+func get_icon(name,group):
+	return base_control.get_icon(name,group)
 
 func _exit_tree():
 	set_panel_enabled(false)
-	if is_instance_valid(enabled_check_box):
-		remove_control_from_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU, enabled_check_box)
-		enabled_check_box.free()
+	if is_instance_valid(palette_menu):
+		remove_control_from_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_MENU, palette_menu)
+		palette_menu.free()
 	if is_instance_valid(drawer):
 		drawer.free()
 		drawer = null
@@ -44,6 +62,17 @@ func edit(obj):
 func make_visible(visible):
 	if !visible:
 		selected_node = null
+		
+func _palette_menu_id_pressed(id):
+	match(id):
+		TogglePaletteEnabled:
+			set_panel_enabled(!panel_enabled)
+		TogglePaletteVisible:
+			if !panel_enabled:
+				set_panel_enabled(true)
+			else:
+				panel_instance.visible = !panel_instance.visible
+				panel_active = panel_instance.visible
 	
 func set_panel_enabled(value):
 	if value:
@@ -52,12 +81,14 @@ func set_panel_enabled(value):
 			panel_instance.set_plugin_instance(self)
 			add_control_to_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_SIDE_LEFT,panel_instance)
 			panel_enabled = true
+		panel_active = true
 	else:
 		if is_instance_valid(panel_instance):
 			remove_control_from_container(EditorPlugin.CONTAINER_CANVAS_EDITOR_SIDE_LEFT,panel_instance)
 			panel_instance.queue_free()
 			panel_instance = null
 		panel_enabled = false
+		panel_active = false
 		if is_instance_valid(drawer):
 			drawer.queue_free()
 			drawer = null
@@ -68,7 +99,7 @@ func drawer_parent_exiting_tree(scene):
 		drawer = null
 
 func _process(delta):
-	if !panel_enabled:
+	if !panel_active:
 		return
 	var scene = editor_interface.get_edited_scene_root()
 	if !Input.is_mouse_button_pressed(BUTTON_LEFT):
@@ -88,14 +119,17 @@ func _process(delta):
 	else:
 		drawer.update()
 		
+func get_instance_target_position(tr, rect, og_pos) -> Vector2:
+	return  panel_instance.snap_pos( -panel_instance.get_grid_offset() + tr.xform(og_pos-rect.size*0.5) + drawer.get_global_mouse_position())
+	
 
 func _draw_overlay(obj:CanvasItem):
 	obj.global_transform = Transform2D.IDENTITY
-	if is_instance_valid(selected_node) && is_instance_valid(panel_instance) && is_instance_valid(panel_instance.selected_item):
+	if panel_active && is_instance_valid(selected_node) && is_instance_valid(panel_instance) && is_instance_valid(panel_instance.selected_item):
 		var rect = panel_instance.selected_item.get_meta("ognode_rect")
 		var tr = panel_instance.palette_transform
 		var og_pos = panel_instance.selected_item.get_meta("ognode_initial_pos")
-		var gpos =  panel_instance.snap_pos(tr.xform(og_pos-rect.size*0.5) + obj.get_global_mouse_position())
+		var gpos =  get_instance_target_position(tr,rect,og_pos)
 		
 		transformed_rect[0] = gpos + tr.xform(rect.position)
 		transformed_rect[1] = gpos + tr.xform(rect.position + Vector2(rect.size.x,0))
@@ -137,7 +171,7 @@ func undo_make_instance(instance):
 		instance.queue_free()
 
 func forward_canvas_gui_input(event):
-	if !is_instance_valid(panel_instance) || !is_instance_valid(panel_instance.selected_item):
+	if !panel_active || !is_instance_valid(panel_instance) || !is_instance_valid(panel_instance.selected_item):
 		return false
 		
 	var make_instance = false
@@ -145,7 +179,7 @@ func forward_canvas_gui_input(event):
 		var rect = panel_instance.selected_item.get_meta("ognode_rect")
 		var og_pos = panel_instance.selected_item.get_meta("ognode_initial_pos")
 		var tr = panel_instance.palette_transform
-		var instance_pos = panel_instance.snap_pos(tr.xform(og_pos-rect.size*0.5) + drawer.get_global_mouse_position())
+		var instance_pos = get_instance_target_position(tr,rect,og_pos)
 		if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				make_instance = true

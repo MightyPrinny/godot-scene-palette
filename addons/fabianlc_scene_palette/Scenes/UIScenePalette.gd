@@ -2,15 +2,18 @@ tool
 extends Control
 
 onready var instance_parent = $VBoxContainer/ScrollContainer/Instances
-onready var tool_bar = $VBoxContainer/ToolBar
-onready var grid_snap_box = $VBoxContainer/ToolBar/CGSnap/GridSnap
-onready var grid_width_spin = $VBoxContainer/ToolBar/CGWidth/GridWidth
-onready var grid_height_spin = $VBoxContainer/ToolBar/CGHeight/GridHeight
-onready var zoom_slider = $VBoxContainer/ToolBar/CZoom/Zoom
-onready var rotation_spin = $VBoxContainer/ToolBar/CRot/Rotation
-onready var flip_box_h = $VBoxContainer/ToolBar/CFlipH/FlipH
-onready var flip_box_v = $VBoxContainer/ToolBar/CFlipV/FlipV
-onready var to_selection_box = $VBoxContainer/ToolBar/CSelectedNode/ToSelection
+onready var tool_bar = $VBoxContainer/Toolbar
+onready var grid_snap_box = $VBoxContainer/TabContainer/Grid/Config/CGSnap/GridSnap
+onready var grid_width_spin = $VBoxContainer/TabContainer/Grid/Config/CGWidth/GridWidth
+onready var grid_height_spin = $VBoxContainer/TabContainer/Grid/Config/CGHeight/GridHeight
+onready var grid_x_off_spin = $VBoxContainer/TabContainer/Grid/Config/CGOffX/GOffX
+onready var grid_y_off_spin = $VBoxContainer/TabContainer/Grid/Config/CGOffY/GOffY
+onready var zoom_slider = $VBoxContainer/Toolbar/CZoom/Zoom
+onready var rotation_spin = $VBoxContainer/TabContainer/Actions/Actions/CRot/Rotation
+onready var flip_box_h = $VBoxContainer/TabContainer/Actions/Actions/CFlipH/FlipH
+onready var flip_box_v = $VBoxContainer/TabContainer/Actions/Actions/CFlipV/FlipV
+onready var to_selection_box = $VBoxContainer/TabContainer/Actions/Actions/CSelectedNode/ToSelection
+onready var sync_to_editor_box = $VBoxContainer/TabContainer/Grid/Config/CSyncToEditor/SyncToEditor
 
 var minimum_item_rect = Vector2(16,16)
 
@@ -28,6 +31,12 @@ var flip_x_tr = Transform2D()
 var flip_y_tr = Transform2D()
 var to_selection = false
 
+var editor_snap_w_spin:SpinBox
+var editor_snap_h_spin:SpinBox
+var editor_snap_ox_spin:SpinBox
+var editor_snap_oy_spin:SpinBox
+var editor_snap_enabled_butt:ToolButton
+
 func set_plugin_instance(var obj):
 	plugin_instance = obj
 
@@ -35,27 +44,134 @@ enum {
 	OpenFile
 }
 
-var file_popup_menu_position
-var file_button:ToolButton
+var file_button:MenuButton
 
 
 func _ready():
 	if !is_instance_valid(plugin_instance):
 		return
+	open_configure_snap()
+	if !sync_to_editor_box.disabled:
+		get_editor_snap_settings(plugin_instance.base_control)
+	else:
+		set_sync_to_editor(true)
 	flip_x_tr = flip_x_tr.scaled(Vector2(-1,1))
 	flip_y_tr = flip_y_tr.scaled(Vector2(1,-1))
 	file_button = tool_bar.get_node("File")
-	file_menu_popup = tool_bar.get_node("File/PopupMenu")
-	file_popup_menu_position = file_menu_popup.rect_position
+	file_menu_popup = file_button.get_popup()
 	file_menu_popup.connect("id_pressed",self, "_file_menu_id_pressed")
 	file_menu_popup.add_item("Open File", OpenFile)
-	tool_bar.get_node("File").connect("pressed",self,"open_file_popup_menu")
 	instance_parent.connect("draw",self,"_draw_selection")
 	zoom_slider.connect("value_changed",self,"set_zoom")
 	rotation_spin.connect("value_changed",self, "set_rotation")
 	flip_box_h.connect("toggled",self,"set_flip_x")
 	flip_box_v.connect("toggled",self,"set_flip_y")
+	if !sync_to_editor_box.disabled:
+		sync_to_editor_box.connect("toggled",self,"set_sync_to_editor")
+		set_sync_to_editor(true)
 	to_selection_box.connect("toggled",self,"set_to_selection")
+
+func open_configure_snap():
+	for child in plugin_instance.canvas_toolbar.get_children():
+		if child is MenuButton:
+			if child.text == "":
+				var popup = child.get_popup() as PopupMenu
+				var id = popup.get_item_index(11)
+				if popup.get_item_text(id) == tr("Configure Snap..."):
+					print("Scene Palette: configuring snap")
+					popup.emit_signal("id_pressed",11)
+					return
+	print("Scene Palette: Failed find configure snap button")
+	sync_to_editor_box.disabled = true
+					
+func set_snap_ox(value):
+	grid_x_off_spin.value = value
+	
+func set_snap_oy(value):
+	grid_y_off_spin.value = value
+
+func set_snap_w(value):
+	grid_width_spin.value = value
+	
+func set_snap_h(value):
+	grid_height_spin.value = value
+	
+func set_snap_enabled(value):
+	grid_snap_box.pressed = value
+	
+func set_sync_to_editor(value):
+	if sync_to_editor_box.disabled:
+		return
+	sync_to_editor_box.pressed = value
+	if value:
+		if !editor_snap_w_spin.is_connected("value_changed",self,"set_snap_w"):
+			editor_snap_w_spin.connect("value_changed",self,"set_snap_w")
+		if !editor_snap_h_spin.is_connected("value_changed",self,"set_snap_h"):
+			editor_snap_h_spin.connect("value_changed",self,"set_snap_h")
+		if !editor_snap_ox_spin.is_connected("value_changed",self,"set_snap_ox"):
+			editor_snap_ox_spin.connect("value_changed",self,"set_snap_ox")
+		if !editor_snap_oy_spin.is_connected("value_changed",self,"set_snap_oy"):
+			editor_snap_oy_spin.connect("value_changed",self,"set_snap_oy")
+		if !editor_snap_enabled_butt.is_connected("toggled",self,"set_snap_enabled"):
+			editor_snap_enabled_butt.connect("toggled",self,"set_snap_enabled")
+		set_snap_w(editor_snap_w_spin.value)
+		set_snap_h(editor_snap_h_spin.value)
+		set_snap_ox(editor_snap_ox_spin.value)
+		set_snap_oy(editor_snap_oy_spin.value)
+		grid_snap_box.pressed = editor_snap_enabled_butt.pressed
+		
+		grid_snap_box.disabled = true
+		grid_width_spin.editable = false
+		grid_height_spin.editable = false
+		grid_x_off_spin.editable = false
+		grid_y_off_spin.editable = false
+	else:
+		if editor_snap_w_spin.is_connected("value_changed",self,"set_snap_w"):
+			editor_snap_w_spin.disconnect("value_changed",self,"set_snap_w")
+		if editor_snap_h_spin.is_connected("value_changed",self,"set_snap_h"):
+			editor_snap_h_spin.disconnect("value_changed",self,"set_snap_h")
+		if editor_snap_ox_spin.is_connected("value_changed",self,"set_snap_ox"):
+			editor_snap_ox_spin.disconnect("value_changed",self,"set_snap_ox")
+		if editor_snap_oy_spin.is_connected("value_changed",self,"set_snap_oy"):
+			editor_snap_oy_spin.disconnect("value_changed",self,"set_snap_oy")
+		if editor_snap_enabled_butt.is_connected("toggled",self,"set_snap_enabled"):
+			editor_snap_enabled_butt.disconnect("toggled",self,"set_snap_enabled")
+			
+		grid_snap_box.disabled = false
+		grid_width_spin.editable = true
+		grid_height_spin.editable = true
+		grid_x_off_spin.editable = true
+		grid_y_off_spin.editable = true
+		
+
+func get_editor_snap_settings(root):
+	var found = false
+	for child in root.get_children():
+		if child is Label:
+			if child.text == tr("Grid Offset:"):
+				var container:GridContainer = child.get_node("..")
+				var snap_dialog:ConfirmationDialog = container.get_node("../..")
+				snap_dialog.get_close_button().emit_signal("pressed")
+				editor_snap_ox_spin = container.get_child(1)
+				editor_snap_oy_spin = container.get_child(2)
+				editor_snap_w_spin = container.get_child(4)
+				editor_snap_h_spin = container.get_child(5)
+				
+				print("Scene Palette: Editor snap settings loaded")
+				found = true
+				break
+		get_editor_snap_settings(child)
+	if !found:
+		return false
+	
+	for child in plugin_instance.canvas_toolbar.get_children():
+		if child is ToolButton:
+			if child.icon == plugin_instance.get_icon("SnapGrid","EditorIcons"):
+				editor_snap_enabled_butt = child
+				break 
+			pass
+	return true
+
 	
 func is_snap_enabled():
 	return grid_snap_box.pressed
@@ -63,10 +179,6 @@ func is_snap_enabled():
 func _draw_selection():
 	if is_instance_valid(selected_item):
 		instance_parent.draw_rect(selected_item.get_rect(),Color.white, false, 1.5)
-
-func open_file_popup_menu():
-	file_menu_popup.popup()
-	file_menu_popup.rect_global_position = file_button.rect_global_position + Vector2(0,32)
 
 func _file_menu_id_pressed(id):
 	match id:
@@ -172,7 +284,7 @@ func local_rect_to_global(canvas_item:CanvasItem, rect:Rect2):
 func snap_pos(vec:Vector2):
 	if !grid_snap_box.pressed:
 		return vec
-	return Vector2(round(vec.x/grid_width_spin.value)*grid_width_spin.value, round(vec.y/grid_height_spin.value)*grid_height_spin.value)
+	return Vector2(editor_snap_ox_spin.value,editor_snap_oy_spin.value) + Vector2(round(vec.x/grid_width_spin.value)*grid_width_spin.value, round(vec.y/grid_height_spin.value)*grid_height_spin.value)
 
 func transform_rect(tr:Transform2D, rect:Rect2):
 	
@@ -250,6 +362,11 @@ func make_node(original_node:CanvasItem):
 		newNode.set_meta("ognode_initial_pos", original_node.rect_position)
 	
 	return newNode
+	
+func get_grid_offset():
+	if !grid_snap_box.pressed:
+		return Vector2()
+	return Vector2(editor_snap_ox_spin.value,editor_snap_oy_spin.value)
 
 func populate_palette(scene:PackedScene, clear_palette = true):
 	if !is_instance_valid(plugin_instance):
