@@ -28,8 +28,8 @@ __meta__ = {
 
 [node name="ToolBar" type="Container" parent="VBoxContainer"]
 margin_right = 186.0
-margin_bottom = 192.0
-rect_min_size = Vector2( 0, 192 )
+margin_bottom = 234.0
+rect_min_size = Vector2( 0, 234 )
 rect_clip_content = true
 script = ExtResource( 2 )
 
@@ -48,10 +48,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CGSnap" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+[node name="CSelectedNode" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
 margin_left = 36.0
-margin_right = 97.0
+margin_right = 143.0
 margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/ToolBar/CSelectedNode"]
+margin_right = 107.0
+margin_bottom = 14.0
+text = "To Selection"
+
+[node name="ToSelection" type="CheckBox" parent="VBoxContainer/ToolBar/CSelectedNode"]
+margin_top = 18.0
+margin_right = 107.0
+margin_bottom = 42.0
+hint_tooltip = "If enabled instances will be added as a child of the selected node"
+
+[node name="CGSnap" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
+margin_top = 42.0
+margin_right = 61.0
+margin_bottom = 84.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -67,9 +86,10 @@ margin_right = 61.0
 margin_bottom = 42.0
 
 [node name="CGWidth" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_left = 98.0
-margin_right = 172.0
-margin_bottom = 52.0
+margin_left = 62.0
+margin_top = 42.0
+margin_right = 136.0
+margin_bottom = 94.0
 size_flags_horizontal = 9
 
 [node name="Label" type="Label" parent="VBoxContainer/ToolBar/CGWidth"]
@@ -93,9 +113,9 @@ allow_greater = true
 suffix = "px"
 
 [node name="CGHeight" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_top = 52.0
+margin_top = 94.0
 margin_right = 74.0
-margin_bottom = 112.0
+margin_bottom = 154.0
 size_flags_horizontal = 9
 size_flags_vertical = 9
 
@@ -119,9 +139,9 @@ suffix = "px"
 
 [node name="CRot" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
 margin_left = 75.0
-margin_top = 52.0
+margin_top = 94.0
 margin_right = 149.0
-margin_bottom = 94.0
+margin_bottom = 136.0
 
 [node name="Label" type="Label" parent="VBoxContainer/ToolBar/CRot"]
 margin_right = 74.0
@@ -139,9 +159,9 @@ value = 360.0
 rounded = true
 
 [node name="CFlipH" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
-margin_top = 112.0
+margin_top = 154.0
 margin_right = 46.0
-margin_bottom = 154.0
+margin_bottom = 196.0
 
 [node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipH"]
 margin_right = 46.0
@@ -157,9 +177,9 @@ size_flags_vertical = 9
 
 [node name="CFlipV" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
 margin_left = 47.0
-margin_top = 112.0
+margin_top = 154.0
 margin_right = 93.0
-margin_bottom = 154.0
+margin_bottom = 196.0
 
 [node name="Label" type="Label" parent="VBoxContainer/ToolBar/CFlipV"]
 margin_right = 46.0
@@ -175,9 +195,9 @@ size_flags_vertical = 9
 
 [node name="CZoom" type="VBoxContainer" parent="VBoxContainer/ToolBar"]
 margin_left = 94.0
-margin_top = 112.0
+margin_top = 154.0
 margin_right = 174.0
-margin_bottom = 192.0
+margin_bottom = 234.0
 
 [node name="Label2" type="Label" parent="VBoxContainer/ToolBar/CZoom"]
 margin_right = 80.0

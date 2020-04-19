@@ -10,6 +10,7 @@ onready var zoom_slider = $VBoxContainer/ToolBar/CZoom/Zoom
 onready var rotation_spin = $VBoxContainer/ToolBar/CRot/Rotation
 onready var flip_box_h = $VBoxContainer/ToolBar/CFlipH/FlipH
 onready var flip_box_v = $VBoxContainer/ToolBar/CFlipV/FlipV
+onready var to_selection_box = $VBoxContainer/ToolBar/CSelectedNode/ToSelection
 
 var minimum_item_rect = Vector2(16,16)
 
@@ -25,6 +26,7 @@ var palette_rotation = 0
 var palette_scale = Vector2(1,1)
 var flip_x_tr = Transform2D()
 var flip_y_tr = Transform2D()
+var to_selection = false
 
 func set_plugin_instance(var obj):
 	plugin_instance = obj
@@ -53,6 +55,7 @@ func _ready():
 	rotation_spin.connect("value_changed",self, "set_rotation")
 	flip_box_h.connect("toggled",self,"set_flip_x")
 	flip_box_v.connect("toggled",self,"set_flip_y")
+	to_selection_box.connect("toggled",self,"set_to_selection")
 	
 func is_snap_enabled():
 	return grid_snap_box.pressed
@@ -69,6 +72,9 @@ func _file_menu_id_pressed(id):
 	match id:
 		OpenFile:
 			_open_file_dialog()
+
+func set_to_selection(value):
+	to_selection = value
 
 func set_flip_x(value):
 	if value:
@@ -166,7 +172,7 @@ func local_rect_to_global(canvas_item:CanvasItem, rect:Rect2):
 func snap_pos(vec:Vector2):
 	if !grid_snap_box.pressed:
 		return vec
-	return Vector2(floor(vec.x/grid_width_spin.value)*grid_width_spin.value, floor(vec.y/grid_height_spin.value)*grid_height_spin.value)
+	return Vector2(round(vec.x/grid_width_spin.value)*grid_width_spin.value, round(vec.y/grid_height_spin.value)*grid_height_spin.value)
 
 func transform_rect(tr:Transform2D, rect:Rect2):
 	

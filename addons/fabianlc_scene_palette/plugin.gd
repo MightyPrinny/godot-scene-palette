@@ -12,6 +12,7 @@ var current_scene:Node
 var last_tile = Vector2()
 var drawing_tiles = false
 var transformed_rect = PoolVector2Array()
+var selected_node
 
 func _enter_tree():
 	transformed_rect.resize(4)
@@ -38,10 +39,11 @@ func handles(obj):
 	return true
 	
 func edit(obj):
-	pass
+	selected_node = obj
 	
 func make_visible(visible):
-	pass
+	if !visible:
+		selected_node = null
 	
 func set_panel_enabled(value):
 	if value:
@@ -89,11 +91,11 @@ func _process(delta):
 
 func _draw_overlay(obj:CanvasItem):
 	obj.global_transform = Transform2D.IDENTITY
-	if is_instance_valid(panel_instance) && is_instance_valid(panel_instance.selected_item):
+	if is_instance_valid(selected_node) && is_instance_valid(panel_instance) && is_instance_valid(panel_instance.selected_item):
 		var rect = panel_instance.selected_item.get_meta("ognode_rect")
 		var tr = panel_instance.palette_transform
-		
-		var gpos =  panel_instance.snap_pos(tr.xform(-rect.size*0.5) + obj.get_global_mouse_position())
+		var og_pos = panel_instance.selected_item.get_meta("ognode_initial_pos")
+		var gpos =  panel_instance.snap_pos(tr.xform(og_pos-rect.size*0.5) + obj.get_global_mouse_position())
 		
 		transformed_rect[0] = gpos + tr.xform(rect.position)
 		transformed_rect[1] = gpos + tr.xform(rect.position + Vector2(rect.size.x,0))
@@ -141,8 +143,9 @@ func forward_canvas_gui_input(event):
 	var make_instance = false
 	if event is InputEventMouse && is_instance_valid(drawer) && is_instance_valid(current_scene):
 		var rect = panel_instance.selected_item.get_meta("ognode_rect")
+		var og_pos = panel_instance.selected_item.get_meta("ognode_initial_pos")
 		var tr = panel_instance.palette_transform
-		var instance_pos = panel_instance.snap_pos(tr.xform(-rect.size*0.5) + drawer.get_global_mouse_position())
+		var instance_pos = panel_instance.snap_pos(tr.xform(og_pos-rect.size*0.5) + drawer.get_global_mouse_position())
 		if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				make_instance = true
@@ -162,7 +165,10 @@ func forward_canvas_gui_input(event):
 			var prev_do_stuff = [funcref(self, "undo_make_instance"),undo_args]
 			do_stuff = prev_do_stuff
 			var new_do_stuff_func = funcref(self,"make_instance")
-			var new_do_stuff = [new_do_stuff_func,[panel_instance.selected_item.get_child(0), instance_pos, current_scene,prev_do_stuff]]
+			var target_node = current_scene
+			if panel_instance.to_selection && is_instance_valid(selected_node):
+				target_node = selected_node
+			var new_do_stuff = [new_do_stuff_func,[panel_instance.selected_item.get_child(0), instance_pos, target_node,prev_do_stuff]]
 			undo_redo.add_do_property(self,"do_stuff",new_do_stuff)
 			undo_redo.add_undo_property(self,"do_stuff",prev_do_stuff)
 			last_instance_made = null
