@@ -253,7 +253,6 @@ func popup_closed(dialog):
 	file_dialog_open = false
 	dialog.queue_free()
 	dialog = null
-	print("file dialog closed")
 
 func _file_selected(file,dialog):
 	var scene = load(file) as PackedScene
@@ -317,6 +316,14 @@ func make_node(original_node:CanvasItem):
 	var child
 	var affine_inv = original_node.get_global_transform().affine_inverse()
 	var has_rect = false
+	if original_node is Control || original_node is Sprite:
+		var rect = local_rect_to_global(original_node,original_node.get_rect())
+		var local_rect = Rect2(affine_inv.xform(rect.position),affine_inv.basis_xform(rect.size))
+		if has_rect:
+			item_rect = rect_union(item_rect, local_rect)
+		else:
+			item_rect = local_rect
+			has_rect = true
 	while !node_roots.empty():
 		root = node_roots.pop_back()
 		child_count = root.get_child_count()
@@ -334,7 +341,7 @@ func make_node(original_node:CanvasItem):
 					has_rect = true
 				
 			i += 1
-	print(item_rect)
+	#print(item_rect)
 	var node_center = item_rect.position + item_rect.size*0.5
 	original_node.get_parent().remove_child(original_node)
 	var newNode = Control.new()
@@ -403,7 +410,7 @@ func populate_palette(scene:PackedScene, clear_palette = true):
 func palette_item_clicked(item:Control):
 	selected_item = item
 	instance_parent.update()
-	print("item clicked: " + item.name)
+	#print("item clicked: " + item.name)
 	
 func palette_item_gui_input(event:InputEvent, item:Control):
 	if event is InputEventMouseButton:
