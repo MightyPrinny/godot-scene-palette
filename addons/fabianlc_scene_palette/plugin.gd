@@ -146,7 +146,7 @@ func make_instance(source_node:Node, position,scale,rotation_deg, parent,undo_st
 		return
 	var new_instance
 	if ResourceLoader.exists(source_node.filename, "PackedScene"):
-		new_instance = load(source_node.filename).instance()
+		new_instance = load(source_node.filename).instance(PackedScene.GEN_EDIT_STATE_INSTANCE)
 	else:
 		new_instance = source_node.duplicate(DUPLICATE_USE_INSTANCING)
 		if source_node.has_meta("og_z_index"):
