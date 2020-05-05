@@ -379,7 +379,7 @@ func canvas_item_get_local_rect(citem:CanvasItem) -> Rect2:
 		return citem.get_rect()
 	if citem is AnimatedSprite:
 		var texture  = citem.frames.get_frame(citem.animation,citem.frame)
-		var rect = Rect2(Vector2(0,0),texture.get_size()*citem.scale)
+		var rect = Rect2(Vector2(0,0),texture.get_size())
 		if citem.centered:
 			rect.position = -rect.size*0.5
 			rect.position += citem.offset
