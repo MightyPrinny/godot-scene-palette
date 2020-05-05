@@ -286,7 +286,6 @@ func snap_pos(vec:Vector2):
 	return Vector2(editor_snap_ox_spin.value,editor_snap_oy_spin.value) + Vector2(round(vec.x/grid_width_spin.value)*grid_width_spin.value, round(vec.y/grid_height_spin.value)*grid_height_spin.value)
 
 func transform_rect(tr:Transform2D, rect:Rect2):
-	
 	var p0 = tr.xform(rect.position)
 	var p1 = tr.xform(rect.position + rect.size*Vector2(1,0))
 	var p2 = tr.xform(rect.position + rect.size*Vector2(0,1))
@@ -299,6 +298,7 @@ func transform_rect(tr:Transform2D, rect:Rect2):
 	return Rect2(left,top,right-left,bottom-top)
 
 func make_node(original_node:CanvasItem):
+	original_node.get_viewport_rect()
 	if original_node is Node2D:
 		original_node.transform = Transform2D.IDENTITY
 	elif original_node is Control:
@@ -316,29 +316,26 @@ func make_node(original_node:CanvasItem):
 	var child
 	var affine_inv = original_node.get_global_transform().affine_inverse()
 	var has_rect = false
-	if original_node is Control || original_node is Sprite:
-		var rect = local_rect_to_global(original_node,original_node.get_rect())
-		var local_rect = Rect2(affine_inv.xform(rect.position),affine_inv.basis_xform(rect.size))
-		if has_rect:
-			item_rect = rect_union(item_rect, local_rect)
-		else:
-			item_rect = local_rect
-			has_rect = true
+	
 	while !node_roots.empty():
 		root = node_roots.pop_back()
 		child_count = root.get_child_count()
+		if root is Control || root is Sprite || root is AnimatedSprite:
+			var rect = local_rect_to_global(root,canvas_item_get_local_rect(root))
+			var local_rect = Rect2(affine_inv.xform(rect.position),affine_inv.basis_xform(rect.size))
+			if has_rect:
+				item_rect = rect_union(item_rect, local_rect)
+			else:
+				item_rect = local_rect
+				has_rect = true
+				
+			if root is Node2D && (root.z_index>0 || !root.z_as_relative) :
+				root.z_index = 0
+				root.z_as_relative = true
 		i = 0
 		while i < child_count:
 			child = root.get_child(i)
 			node_roots.append(child)
-			if child is Control || child is Sprite:
-				var rect = local_rect_to_global(child,child.get_rect())
-				var local_rect = Rect2(affine_inv.xform(rect.position),affine_inv.basis_xform(rect.size))
-				if has_rect:
-					item_rect = rect_union(item_rect, local_rect)
-				else:
-					item_rect = local_rect
-					has_rect = true
 				
 			i += 1
 	#print(item_rect)
@@ -362,6 +359,8 @@ func make_node(original_node:CanvasItem):
 	var new_center = newNode.rect_position + newNode.rect_size*0.5
 	
 	if original_node is Node2D:
+		original_node.set_meta("og_z_index",original_node.z_index)
+		original_node.z_index = 0
 		original_node.position = new_center - (node_center)
 		newNode.set_meta("ognode_initial_pos", original_node.position)
 	elif original_node is Control:
@@ -375,6 +374,19 @@ func get_grid_offset():
 		return Vector2()
 	return Vector2(editor_snap_ox_spin.value,editor_snap_oy_spin.value)
 
+func canvas_item_get_local_rect(citem:CanvasItem) -> Rect2:
+	if citem is Sprite || citem is Control:
+		return citem.get_rect()
+	if citem is AnimatedSprite:
+		var texture  = citem.frames.get_frame(citem.animation,citem.frame)
+		var rect = Rect2(Vector2(0,0),texture.get_size()*citem.scale)
+		if citem.centered:
+			rect.position = -rect.size*0.5
+			rect.position += citem.offset
+			
+		return rect
+	return Rect2(Vector2(),Vector2.ONE*16)
+	
 func populate_palette(scene:PackedScene, clear_palette = true):
 	if !is_instance_valid(plugin_instance):
 		return

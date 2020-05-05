@@ -140,11 +140,17 @@ func _draw_overlay(obj:CanvasItem):
 
 var last_instance_made
 
-func make_instance(source_node, position,scale,rotation_deg, parent,undo_stuff):
+func make_instance(source_node:Node, position,scale,rotation_deg, parent,undo_stuff):
 	if !is_instance_valid(source_node) || !is_instance_valid(parent):
 		last_instance_made = null
 		return
-	var new_instance = source_node.duplicate(DUPLICATE_USE_INSTANCING)
+	var new_instance
+	if ResourceLoader.exists(source_node.filename, "PackedScene"):
+		new_instance = load(source_node.filename).instance()
+	else:
+		new_instance = source_node.duplicate(DUPLICATE_USE_INSTANCING)
+		if source_node.has_meta("og_z_index"):
+			new_instance.z_index = source_node.get_meta("og_z_index")
 	parent.add_child(new_instance)
 	new_instance.owner = current_scene
 	var tr:Transform2D = panel_instance.palette_transform

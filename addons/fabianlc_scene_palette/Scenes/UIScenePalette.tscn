@@ -346,7 +346,6 @@ suffix = "px"
 margin_top = 137.0
 margin_right = 286.0
 margin_bottom = 586.0
-rect_clip_content = false
 size_flags_vertical = 3
 
 [node name="Instances" type="Container" parent="VBoxContainer/ScrollContainer"]
